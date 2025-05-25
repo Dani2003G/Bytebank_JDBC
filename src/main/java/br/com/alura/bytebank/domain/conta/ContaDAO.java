@@ -109,6 +109,11 @@ public class ContaDAO {
             ps.close();
             conn.close();
         } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
             throw new RuntimeException(e.getMessage());
         }
     }
