@@ -6,6 +6,7 @@ import br.com.alura.bytebank.domain.RegraDeNegocioException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class ContaService {
@@ -65,10 +66,11 @@ public class ContaService {
     }
 
     private Conta buscarContaPorNumero(Integer numero) {
-        return contas
-                .stream()
-                .filter(c -> c.getNumero() == numero)
-                .findFirst()
-                .orElseThrow(() -> new RegraDeNegocioException("Não existe conta cadastrada com esse número!"));
+        Connection conn = connection.recuperarConexao();
+        Conta conta = new ContaDAO(conn).listarPorNumero(numero);
+        if (Objects.nonNull(conta)) {
+            return conta;
+        }
+        throw new RegraDeNegocioException("Não existe conta cadastrada com esse número!");
     }
 }
