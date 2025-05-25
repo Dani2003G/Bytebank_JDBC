@@ -7,12 +7,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class ConexaoDB {
+public class ConnectionFactory {
 
-    public static void main(String... args) {
+    public Connection recuperarConexao() {
         try {
             Properties props = new Properties();
-            InputStream input = ConexaoDB.class.getClassLoader().getResourceAsStream("config.properties");
+            InputStream input = ConnectionFactory.class.getClassLoader().getResourceAsStream("config.properties");
             if (input == null) {
                 throw new RuntimeException("Arquivo config.properties não encontrado no classpath.");
             }
@@ -22,16 +22,10 @@ public class ConexaoDB {
             String user = props.getProperty("db.user");
             String password = props.getProperty("db.password");
 
-            Connection connection = DriverManager
+            return DriverManager
                     .getConnection(url, user, password);
-
-            System.out.println("Recuperei a conexão");
-
-            connection.close();
-        } catch (SQLException e) {
-            System.out.println(e);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());;
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
