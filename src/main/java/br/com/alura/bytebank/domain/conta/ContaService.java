@@ -55,6 +55,12 @@ public class ContaService {
         alterar(conta.getNumero(), conta.getSaldo().add(valor));
     }
 
+    public void realizarTransferencia(Integer numeroDaContaOrigem, Integer numeroDaContaDestino, BigDecimal valor) {
+        this.buscarContaPorNumero(numeroDaContaDestino);
+        this.realizarSaque(numeroDaContaOrigem, valor);
+        this.realizarDeposito(numeroDaContaDestino, valor);
+    }
+
     public void encerrar(Integer numeroDaConta) {
         var conta = buscarContaPorNumero(numeroDaConta);
         if (conta.possuiSaldo()) {
@@ -70,7 +76,7 @@ public class ContaService {
         if (Objects.nonNull(conta)) {
             return conta;
         }
-        throw new RegraDeNegocioException("Não existe conta cadastrada com esse número!");
+        throw new RegraDeNegocioException("Não existe conta cadastrada com o número " + numero);
     }
 
     private void alterar(Integer numero, BigDecimal valor) {
